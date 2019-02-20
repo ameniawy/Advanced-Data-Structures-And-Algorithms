@@ -13,8 +13,3 @@ sed -i 's/Template/AssignmentA/g' ./Assignment/AssignmentA.java
 sed -i 's/Template/AssignmentB/g' ./Assignment/AssignmentB.java
 sed -i 's/Template/A/g' ./Lab/A.java
 sed -i 's/Template/B/g' ./Lab/B.java
-
-sed -i 's/XXXX/Assignment/g' ./Assignment/AssignmentA.java
-sed -i 's/XXXX/Assignment/g' ./Assignment/AssignmentB.java
-sed -i 's/XXXX/Lab/g' ./Lab/A.java
-sed -i 's/XXXX/Lab/g' ./Lab/B.java
