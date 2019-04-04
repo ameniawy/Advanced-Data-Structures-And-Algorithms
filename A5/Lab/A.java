@@ -80,26 +80,26 @@ public class A {
                 
                 low[u]  = Math.min(low[u], low[v]);
   
-                // if root
-                if (parent[u] == NIL && children > 1) {
-                    ap[u] = true; 
-                    isRoot[u] = true;
-                    apAddition[u] = children;
-                }
-  
+                
                 // if not root and am articulation point
                 if (parent[u] != NIL && low[v] >= time[u]) {
                     ap[u] = true;
                     // how many points depend on me?
                     apAddition[u] += 1;
                 }
-
+                
             }
             else if (v != parent[u]) {
                 low[u]  = Math.min(low[u], time[v]);
             }
         }
-
+        
+        // if root
+        if (parent[u] == NIL && children > 1) {
+            ap[u] = true; 
+            isRoot[u] = true;
+            apAddition[u] = children;
+        }
     }
 
 

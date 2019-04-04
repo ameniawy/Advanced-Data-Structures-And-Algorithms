@@ -53,10 +53,15 @@ public class AssignmentB {
                 graph[gate_1 << 1].add(gate_2 << 1);
                 // g2 -> g1
                 graph[gate_2 << 1].add(gate_1 << 1);
+                
+                graph[gate_2 << 1 | 1].add(gate_1 << 1 | 1);
+                
+                graph[gate_1 << 1 | 1].add(gate_2 << 1 | 1);
 
             } else if (t == 4) {
                 // g1 -> g2
                 graph[gate_1 << 1].add(gate_2 << 1);
+                graph[gate_2 << 1 | 1].add(gate_1 << 1 | 1);
             } else if (t == 5) {
                 // g1 -> ~g2
                 graph[gate_1 << 1].add(gate_2 << 1 | 1);
