@@ -7,3 +7,6 @@
 - M1: Persistent Segment Tree & Persistent Skip List with Binary Search
 - A5: Graphs: Articulation Points & Strongly Connected Components & 2-SAT Problem
 - A6: Heavy-Light Decomposition & Minimum Spanning Tree
+- A7: Geometry
+- A8: String Matching (KMP, Hashing, Trie, Aho-Corasik)
+- A9: Interview Questions

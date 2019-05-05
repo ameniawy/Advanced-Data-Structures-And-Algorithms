@@ -3,12 +3,11 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Collections;
 
-public class B {
+public class AssignmentA {
 
-    static boolean dp[][];
-    static boolean dp_visited[][];
-    static String lydia[];
-    static int N;
+    static long B = 67;
+    static long MOD = ((long) 10e9) + 7;
+    static int D = 63;
 
     public static void main(String[] args) throws Exception {
 
@@ -16,73 +15,72 @@ public class B {
 
         PrintWriter out = new PrintWriter(System.out);
 
-        int T = sc.nextInt();
+        String s = sc.next();
+        String t = sc.next();
 
-        for (int i = 1; i <= T; i++) {
-            N = sc.nextInt();
-            lydia = sc.next().split("");
-            dp = new boolean[N][N];
-            dp_visited = new boolean[N][N];
-            String res = dfs(0, 0, 0, 0, 0);
-            out.println("Case #" + i + ": " + res);
-        }
+        System.out.println(rabinKarp(s, t));
+
 
         out.flush();
         out.close();
     }
 
+    public static int rabinKarp(String s, String t) {
 
+        if (s.length() != t.length())
+            return -1;
 
-    public static String dfs(int x, int y, int lydia_x, int lydia_y, int index) {
-        if (x == N - 1 && y == N - 1)
-            return "";
+        char text[] = s.toCharArray();
 
+        long s_hash = calculateHash(text);
+        long t_hash = calculateHash(t.toCharArray());
 
-        int lydia_x_old = lydia_x;
-        int lydia_y_old = lydia_y;
-        if (lydia[index].equals("E")) {
-            lydia_x++;
-        } else {
-            lydia_y++;
-        }
+        long E = 1;
 
-        // Two options, take the valid one
-        if (y + 1 < N && !(y == lydia_y_old && y + 1 == lydia_y)) {
-            // go down
-            if (dp_visited[x][y + 1]) {
-                // visited before, check if its valid
-                if (dp[x][y + 1]) {
-                    return "S" + dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                dp_visited[x][y + 1] = true;
-                if (res != null) {
-                    dp[x][y + 1] = true;
-                    return "S" + res;
-                }
+        ArrayList<Character> shift = new ArrayList<>();
+
+        // The value of h would be "pow(d, M-1)%q"
+        for (int i = 0; i < s.length(); i++)
+            E = (E * D) % MOD;
+
+        long saved = s_hash;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s_hash == t_hash)
+                return i; // TODO: MIGHT NEED TO CHECK MANUALLY
+
+            System.out.println(s_hash + " " + t_hash);
+
+            shift.add(text[i]);
+            saved = long_mod(saved - long_mod(text[i] * E));
+            // System.out.println(saved);
+            s_hash = saved;
+            for (int z = shift.size() - 1; z >= 0; z--) {
+                s_hash = long_mod(s_hash * B);
+                s_hash = long_mod(s_hash + shift.get(z));
             }
-        }
-        if (x + 1 < N && !(x == lydia_x_old && x + 1 == lydia_x)) {
-            // go down
-            if (dp_visited[x + 1][y]) {
-                // visited before, check if its valid
-                if (dp[x + 1][y]) {
-                    return "E" + dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                dp_visited[x + 1][y] = true;
-                if (res != null) {
-                    dp[x + 1][y] = true;
-                    return "E" + res;
-                }
-            }
+
+            // s_hash = long_mod((B * (s_hash - text[i] * E) + text[i]));
+
+
         }
 
 
 
-        return null;
+        return -1;
+    }
+
+    // correctly calculates a mod b even if a < 0
+    public static long long_mod(long a) {
+        return (a % MOD + MOD) % MOD;
+    }
+
+    public static long calculateHash(char s[]) {
+        long hp = 0;
+        for (int i = s.length - 1; i >= 0; i--)
+            hp = long_mod(hp * B + s[i]);
+        // hp = long_mod((B * hp + s[i]));
+        return hp;
     }
 
 

@@ -1,14 +1,10 @@
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Collections;
 
-public class B {
-
-    static boolean dp[][];
-    static boolean dp_visited[][];
-    static String lydia[];
-    static int N;
+public class A {
 
     public static void main(String[] args) throws Exception {
 
@@ -16,73 +12,79 @@ public class B {
 
         PrintWriter out = new PrintWriter(System.out);
 
-        int T = sc.nextInt();
+        Point p1 = new Point();
+        p1.x = sc.nextInt();
+        p1.y = sc.nextInt();
 
-        for (int i = 1; i <= T; i++) {
-            N = sc.nextInt();
-            lydia = sc.next().split("");
-            dp = new boolean[N][N];
-            dp_visited = new boolean[N][N];
-            String res = dfs(0, 0, 0, 0, 0);
-            out.println("Case #" + i + ": " + res);
-        }
+        Point p2 = new Point();
+        p2.x = sc.nextInt();
+        p2.y = sc.nextInt();
+
+        Point p3 = new Point();
+        p3.x = sc.nextInt();
+        p3.y = sc.nextInt();
+
+        Point p4 = new Point();
+        p4.x = sc.nextInt();
+        p4.y = sc.nextInt();
+
+
+        double d1 = distance(p1, p2);
+        double d2 = distance(p3, p4);
+
+
+        Vector v1 = new Vector(p2.x - p1.x, p2.y - p1.y);
+        Vector v2 = new Vector(p4.x - p3.x, p4.y - p3.y);
+
+        Vector sum = new Vector(v1.x + v2.x, v1.y + v2.y);
+
+
+
+        double dot = v1.x * v2.x + v1.y * v2.y;
+
+        double cross = v1.x * v2.y - v1.y * v2.x;
+
+        DecimalFormat six_places = new DecimalFormat("#0.000000000");
+
+
+        out.println(d1 + " " + d2);
+        out.println(sum.x + " " + sum.y);
+        out.println(six_places.format(dot) + " " + six_places.format(cross));
+        out.println(Math.abs(cross / 2.0));
 
         out.flush();
         out.close();
     }
 
+    static double distance(Point p1, Point p2) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }
 
+    static class Vector {
 
-    public static String dfs(int x, int y, int lydia_x, int lydia_y, int index) {
-        if (x == N - 1 && y == N - 1)
-            return "";
+        double x, y;
 
+        public Vector() {
 
-        int lydia_x_old = lydia_x;
-        int lydia_y_old = lydia_y;
-        if (lydia[index].equals("E")) {
-            lydia_x++;
-        } else {
-            lydia_y++;
         }
 
-        // Two options, take the valid one
-        if (y + 1 < N && !(y == lydia_y_old && y + 1 == lydia_y)) {
-            // go down
-            if (dp_visited[x][y + 1]) {
-                // visited before, check if its valid
-                if (dp[x][y + 1]) {
-                    return "S" + dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                dp_visited[x][y + 1] = true;
-                if (res != null) {
-                    dp[x][y + 1] = true;
-                    return "S" + res;
-                }
-            }
+        public Vector(double x, double y) {
+            this.x = x;
+            this.y = y;
         }
-        if (x + 1 < N && !(x == lydia_x_old && x + 1 == lydia_x)) {
-            // go down
-            if (dp_visited[x + 1][y]) {
-                // visited before, check if its valid
-                if (dp[x + 1][y]) {
-                    return "E" + dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                dp_visited[x + 1][y] = true;
-                if (res != null) {
-                    dp[x + 1][y] = true;
-                    return "E" + res;
-                }
-            }
+    }
+
+    static class Point {
+        int x, y;
+
+        public Point() {
+
         }
 
-
-
-        return null;
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 
 

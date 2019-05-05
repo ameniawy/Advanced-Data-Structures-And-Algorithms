@@ -5,86 +5,43 @@ import java.util.Collections;
 
 public class B {
 
-    static boolean dp[][];
-    static boolean dp_visited[][];
-    static String lydia[];
-    static int N;
-
     public static void main(String[] args) throws Exception {
 
         Scanner sc = new Scanner(System.in);
 
         PrintWriter out = new PrintWriter(System.out);
 
-        int T = sc.nextInt();
+        while (sc.ready()) {
+            String s = sc.next();
 
-        for (int i = 1; i <= T; i++) {
-            N = sc.nextInt();
-            lydia = sc.next().split("");
-            dp = new boolean[N][N];
-            dp_visited = new boolean[N][N];
-            String res = dfs(0, 0, 0, 0, 0);
-            out.println("Case #" + i + ": " + res);
+            int f[] = failureFunction(s.toCharArray());
+
+            if (f[f.length - 1] == 0)
+                out.println(s);
+            else {
+                out.println(s.substring(0, s.length() - f[f.length - 1]));
+            }
         }
+
 
         out.flush();
         out.close();
     }
 
-
-
-    public static String dfs(int x, int y, int lydia_x, int lydia_y, int index) {
-        if (x == N - 1 && y == N - 1)
-            return "";
-
-
-        int lydia_x_old = lydia_x;
-        int lydia_y_old = lydia_y;
-        if (lydia[index].equals("E")) {
-            lydia_x++;
-        } else {
-            lydia_y++;
+    public static int[] failureFunction(char[] P) {
+        int m = P.length;
+        int[] f = new int[m + 1];
+        int i = 0, j = -1;
+        f[0] = -1;
+        while (i < m) {
+            while (j >= 0 && P[i] != P[j])
+                j = f[j];
+            i++;
+            j++;
+            f[i] = j;
         }
-
-        // Two options, take the valid one
-        if (y + 1 < N && !(y == lydia_y_old && y + 1 == lydia_y)) {
-            // go down
-            if (dp_visited[x][y + 1]) {
-                // visited before, check if its valid
-                if (dp[x][y + 1]) {
-                    return "S" + dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                dp_visited[x][y + 1] = true;
-                if (res != null) {
-                    dp[x][y + 1] = true;
-                    return "S" + res;
-                }
-            }
-        }
-        if (x + 1 < N && !(x == lydia_x_old && x + 1 == lydia_x)) {
-            // go down
-            if (dp_visited[x + 1][y]) {
-                // visited before, check if its valid
-                if (dp[x + 1][y]) {
-                    return "E" + dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                dp_visited[x + 1][y] = true;
-                if (res != null) {
-                    dp[x + 1][y] = true;
-                    return "E" + res;
-                }
-            }
-        }
-
-
-
-        return null;
+        return f;
     }
-
 
     static class Scanner {
 

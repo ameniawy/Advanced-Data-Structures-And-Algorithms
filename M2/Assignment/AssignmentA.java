@@ -3,12 +3,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Collections;
 
-public class B {
+public class AssignmentA {
 
-    static boolean dp[][];
-    static boolean dp_visited[][];
-    static String lydia[];
-    static int N;
+    static ArrayList<Integer>[] graph;
+    // static int parent[];
 
     public static void main(String[] args) throws Exception {
 
@@ -16,73 +14,41 @@ public class B {
 
         PrintWriter out = new PrintWriter(System.out);
 
-        int T = sc.nextInt();
+        int V = sc.nextInt();
+        int k = sc.nextInt();
+        int E = V - 1;
 
-        for (int i = 1; i <= T; i++) {
-            N = sc.nextInt();
-            lydia = sc.next().split("");
-            dp = new boolean[N][N];
-            dp_visited = new boolean[N][N];
-            String res = dfs(0, 0, 0, 0, 0);
-            out.println("Case #" + i + ": " + res);
+        graph = new ArrayList[V + 1];
+        for (int i = 0; i <= V; i++)
+            graph[i] = new ArrayList<Integer>();
+
+        while (E-- > 0) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            graph[u].add(v);
+            graph[v].add(u);
         }
+
+        int size_of_sub = V / k;
+
+        // System.out.println(size_of_sub);
+        int res = dfs(1, 0, size_of_sub);
+
+        out.println((res == 0 && V % k == 0) ? "Yes" : "No");
 
         out.flush();
         out.close();
     }
 
+    static int dfs(int u, int parent, int size_of_sub) {
 
-
-    public static String dfs(int x, int y, int lydia_x, int lydia_y, int index) {
-        if (x == N - 1 && y == N - 1)
-            return "";
-
-
-        int lydia_x_old = lydia_x;
-        int lydia_y_old = lydia_y;
-        if (lydia[index].equals("E")) {
-            lydia_x++;
-        } else {
-            lydia_y++;
+        int size = 1;
+        for (int v : graph[u]) {
+            if (v != parent)
+                size += dfs(v, u, size_of_sub);
         }
 
-        // Two options, take the valid one
-        if (y + 1 < N && !(y == lydia_y_old && y + 1 == lydia_y)) {
-            // go down
-            if (dp_visited[x][y + 1]) {
-                // visited before, check if its valid
-                if (dp[x][y + 1]) {
-                    return "S" + dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                dp_visited[x][y + 1] = true;
-                if (res != null) {
-                    dp[x][y + 1] = true;
-                    return "S" + res;
-                }
-            }
-        }
-        if (x + 1 < N && !(x == lydia_x_old && x + 1 == lydia_x)) {
-            // go down
-            if (dp_visited[x + 1][y]) {
-                // visited before, check if its valid
-                if (dp[x + 1][y]) {
-                    return "E" + dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                dp_visited[x + 1][y] = true;
-                if (res != null) {
-                    dp[x + 1][y] = true;
-                    return "E" + res;
-                }
-            }
-        }
-
-
-
-        return null;
+        return (size == size_of_sub) ? 0 : size;
     }
 
 

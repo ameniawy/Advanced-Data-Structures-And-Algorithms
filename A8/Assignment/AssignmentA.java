@@ -3,12 +3,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Collections;
 
-public class B {
-
-    static boolean dp[][];
-    static boolean dp_visited[][];
-    static String lydia[];
-    static int N;
+public class AssignmentA {
 
     public static void main(String[] args) throws Exception {
 
@@ -16,73 +11,73 @@ public class B {
 
         PrintWriter out = new PrintWriter(System.out);
 
-        int T = sc.nextInt();
+        String s = sc.next();
+        String t = sc.next();
 
-        for (int i = 1; i <= T; i++) {
-            N = sc.nextInt();
-            lydia = sc.next().split("");
-            dp = new boolean[N][N];
-            dp_visited = new boolean[N][N];
-            String res = dfs(0, 0, 0, 0, 0);
-            out.println("Case #" + i + ": " + res);
+        char s_rev_char[] = new StringBuilder(s).reverse().toString().toCharArray();
+
+        char s_char[] = s.toCharArray();
+        char t_char[] = t.toCharArray();
+        int f[] = failureFunction(t_char);
+
+        // int counter = 0;
+        boolean found = false;
+        int steps = 0;
+
+        for (int i = 0; i < s.length() && s.length() == t.length() && !found; i++) {
+            // i for different starting points
+            int pattern_index = 0;
+            for (int j = i; i < s.length() + i; j++) {
+                char current = 'x';
+                if (j >= s.length()) {
+                    // use the reverse pointer
+                    current = s_rev_char[s.length() - i + (j % s.length())];
+                } else {
+                    // use index j normally
+                    current = s_char[j];
+                }
+
+                // do check here
+                if (current != t_char[pattern_index]) {
+                    // System.out.println(i);
+                    i = i + f[pattern_index + 1];
+                    break;
+                }
+
+                pattern_index++;
+                if (pattern_index == s.length()) {
+                    found = true;
+                    steps = i;
+                    break;
+                }
+            }
         }
+
+        if (found) {
+            out.println("Yes");
+            out.println(steps);
+        } else {
+            out.println("No");
+        }
+
 
         out.flush();
         out.close();
     }
 
-
-
-    public static String dfs(int x, int y, int lydia_x, int lydia_y, int index) {
-        if (x == N - 1 && y == N - 1)
-            return "";
-
-
-        int lydia_x_old = lydia_x;
-        int lydia_y_old = lydia_y;
-        if (lydia[index].equals("E")) {
-            lydia_x++;
-        } else {
-            lydia_y++;
+    public static int[] failureFunction(char[] P) {
+        int m = P.length;
+        int[] f = new int[m + 1];
+        int i = 0, j = -1;
+        f[0] = -1;
+        while (i < m) {
+            while (j >= 0 && P[i] != P[j])
+                j = f[j];
+            i++;
+            j++;
+            f[i] = j;
         }
-
-        // Two options, take the valid one
-        if (y + 1 < N && !(y == lydia_y_old && y + 1 == lydia_y)) {
-            // go down
-            if (dp_visited[x][y + 1]) {
-                // visited before, check if its valid
-                if (dp[x][y + 1]) {
-                    return "S" + dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x, y + 1, lydia_x, lydia_y, index + 1);
-                dp_visited[x][y + 1] = true;
-                if (res != null) {
-                    dp[x][y + 1] = true;
-                    return "S" + res;
-                }
-            }
-        }
-        if (x + 1 < N && !(x == lydia_x_old && x + 1 == lydia_x)) {
-            // go down
-            if (dp_visited[x + 1][y]) {
-                // visited before, check if its valid
-                if (dp[x + 1][y]) {
-                    return "E" + dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                }
-            } else {
-                String res = dfs(x + 1, y, lydia_x, lydia_y, index + 1);
-                dp_visited[x + 1][y] = true;
-                if (res != null) {
-                    dp[x + 1][y] = true;
-                    return "E" + res;
-                }
-            }
-        }
-
-
-
-        return null;
+        return f;
     }
 
 
